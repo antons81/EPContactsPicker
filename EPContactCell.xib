@@ -47,7 +47,7 @@
                             <constraint firstAttribute="height" constant="40" id="pAq-lQ-W6t"/>
                         </constraints>
                     </view>
-                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="contactDeselected" translatesAutoresizingMaskIntoConstraints="NO" id="EoF-fE-sYi">
+                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="EoF-fE-sYi">
                         <rect key="frame" x="287" y="19" width="22" height="22"/>
                         <constraints>
                             <constraint firstAttribute="width" secondItem="EoF-fE-sYi" secondAttribute="height" multiplier="1:1" id="8Vn-Sd-rnW"/>
@@ -87,7 +87,4 @@
             <point key="canvasLocation" x="245" y="321"/>
         </tableViewCell>
     </objects>
-    <resources>
-        <image name="contactDeselected" width="22" height="22"/>
-    </resources>
 </document>
