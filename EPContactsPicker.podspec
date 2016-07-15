@@ -21,7 +21,7 @@ DESC
   s.frameworks = 'Contacts', 'ContactsUI'
   s.resources        = ["Pods/EPContactCell.xib"]
   s.resource_bundles = {
-    'EPContactsPicker' => ['Pods/**/*.xib']
+    'EPContactsPicker' => ['Pods/**/*.{xib,png}']
     }
 
 end
