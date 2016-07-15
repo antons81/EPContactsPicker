@@ -10,11 +10,12 @@ import UIKit
 
 class EPContactCell: UITableViewCell {
 
-    @IBOutlet weak var contactTextLabel: UILabel!
-    @IBOutlet weak var contactDetailTextLabel: UILabel!
-    @IBOutlet weak var contactImageView: UIImageView!
-    @IBOutlet weak var contactInitialLabel: UILabel!
-    @IBOutlet weak var contactContainerView: UIView!
+    @IBOutlet weak var contactTextLabel                 : UILabel!
+    @IBOutlet weak var contactDetailTextLabel           : UILabel!
+    @IBOutlet weak var contactImageView                 : UIImageView!
+    @IBOutlet weak var contactInitialLabel              : UILabel!
+    @IBOutlet weak var contactContainerView             : UIView!
+    @IBOutlet weak var selectedIndicator                : UIImageView!
     
     var contact: EPContact?
     

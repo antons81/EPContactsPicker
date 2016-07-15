@@ -47,7 +47,23 @@ public class EPContactsPicker: UITableViewController, UISearchResultsUpdating, U
     
     override public func viewDidLoad() {
         super.viewDidLoad()
+        
         self.title = EPGlobalConstants.Strings.contactsTitle
+        self.tableView.tableFooterView = UIView()
+        
+        dispatch_async(dispatch_get_main_queue()) {
+            
+            UIApplication.sharedApplication().statusBarStyle = .LightContent
+            
+            self.navigationController?.navigationBar.barTintColor   = UIColor(red:0.45, green:0.69, blue:0.25, alpha:1.00)
+            self.navigationController?.navigationBar.tintColor      = UIColor.whiteColor()
+            
+            self.navigationController?.navigationBar.titleTextAttributes = [
+                NSForegroundColorAttributeName : UIColor.whiteColor(),
+                NSFontAttributeName : UIFont(name: "SFUIText-Bold", size: 18)!
+            ]
+        }
+
 
         registerContactCell()
         inititlizeBarButtons()
@@ -68,11 +84,13 @@ public class EPContactsPicker: UITableViewController, UISearchResultsUpdating, U
     }
     
     func inititlizeBarButtons() {
-        let cancelButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Cancel, target: self, action: #selector(onTouchCancelButton))
+        //let cancelButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Cancel, target: self, action: #selector(onTouchCancelButton))
+        let cancelButton = UIBarButtonItem(image: UIImage(named: "Close"), style: .Plain, target: self, action: #selector(onTouchCancelButton))
         self.navigationItem.leftBarButtonItem = cancelButton
         
         if multiSelectEnabled {
-            let doneButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Done, target: self, action: #selector(onTouchDoneButton))
+            //let doneButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Done, target: self, action: #selector(onTouchDoneButton))
+            let doneButton = UIBarButtonItem(title: "Send", style: .Plain, target: self, action: #selector(onTouchDoneButton))
             self.navigationItem.rightBarButtonItem = doneButton
             
         }
@@ -241,11 +259,29 @@ public class EPContactsPicker: UITableViewController, UISearchResultsUpdating, U
         return 0
     }
 
-    // MARK: - Table View Delegates
+    
+    
+    // MARK: - Table View Datasource
+    
+    enum Indicator {
+        
+        case selected
+        case deselected
+        
+        var image : UIImage {
+            switch self {
+                case .selected: return UIImage(named: "contactSelected")!
+                case .deselected: return UIImage(named: "contactDeselected")!
+            }
+        }
+    }
 
     override public func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier("Cell", forIndexPath: indexPath) as! EPContactCell
-        cell.accessoryType = UITableViewCellAccessoryType.None
+        //cell.accessoryType = UITableViewCellAccessoryType.None
+        
+        cell.selectedIndicator.image = Indicator.deselected.image
+        
         //Convert CNContact to EPContact
         var contact = EPContact()
         
@@ -258,10 +294,18 @@ public class EPContactsPicker: UITableViewController, UISearchResultsUpdating, U
             }
         }
         if multiSelectEnabled  && selectedContacts.contains({ $0.contactId == contact.contactId }) {
-            cell.accessoryType = UITableViewCellAccessoryType.Checkmark
+            //cell.accessoryType = UITableViewCellAccessoryType.Checkmark
+            cell.selectedIndicator.image = Indicator.selected.image
         }
         cell.updateContactsinUI(contact, indexPath: indexPath, subtitleType: subtitleCellValue)
         return cell
+    }
+    
+    // MARK: - Table View Delegates
+    
+    public override func tableView(tableView: UITableView, willDisplayCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {
+        cell.separatorInset = UIEdgeInsetsZero
+        cell.layoutMargins = UIEdgeInsetsZero
     }
     
     override public func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
@@ -269,8 +313,10 @@ public class EPContactsPicker: UITableViewController, UISearchResultsUpdating, U
         let cell = tableView.cellForRowAtIndexPath(indexPath) as! EPContactCell
         let selectedContact =  cell.contact!
         if multiSelectEnabled {
+            
             //Keeps track of enable=ing and disabling contacts
-            if cell.accessoryType == UITableViewCellAccessoryType.Checkmark {
+            
+            /*if cell.accessoryType == UITableViewCellAccessoryType.Checkmark {
                 cell.accessoryType = UITableViewCellAccessoryType.None
                 selectedContacts = selectedContacts.filter(){
                     return selectedContact.contactId != $0.contactId
@@ -278,6 +324,17 @@ public class EPContactsPicker: UITableViewController, UISearchResultsUpdating, U
             }
             else {
                 cell.accessoryType = UITableViewCellAccessoryType.Checkmark
+                selectedContacts.append(selectedContact)
+            }*/
+            
+            if cell.selectedIndicator.image == Indicator.selected.image {
+                cell.selectedIndicator.image = Indicator.deselected.image
+                selectedContacts = selectedContacts.filter(){
+                    return selectedContact.contactId != $0.contactId
+                }
+
+            } else {
+                cell.selectedIndicator.image = Indicator.selected.image
                 selectedContacts.append(selectedContact)
             }
         }
@@ -292,16 +349,23 @@ public class EPContactsPicker: UITableViewController, UISearchResultsUpdating, U
         return 60.0
     }
     
-    override public func tableView(tableView: UITableView, sectionForSectionIndexTitle title: String, atIndex index: Int) -> Int {
+    /*override public func tableView(tableView: UITableView, sectionForSectionIndexTitle title: String, atIndex index: Int) -> Int {
         if resultSearchController.active { return 0 }
         tableView.scrollToRowAtIndexPath(NSIndexPath(forRow: 0, inSection: index), atScrollPosition: UITableViewScrollPosition.Top , animated: false)        
         return sortedContactKeys.indexOf(title)!
-    }
+    }*/
     
-    override  public func sectionIndexTitlesForTableView(tableView: UITableView) -> [String]? {
+    /*override  public func sectionIndexTitlesForTableView(tableView: UITableView) -> [String]? {
         if resultSearchController.active { return nil }
         return sortedContactKeys
-    }
+    }*/
+    
+   /* override public func tableView(tableView: UITableView!, viewForHeaderInSection section: Int) -> UIView! {
+        let headerView = UIView(frame: CGRectMake(0, 0, tableView.bounds.size.width, 30))
+        headerView.backgroundColor = UIColor.clearColor()
+        headerView.
+        return headerView
+    }*/
 
     override public func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         if resultSearchController.active { return nil }
