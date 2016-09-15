@@ -54,13 +54,15 @@ public class EPContact: NSObject {
         }
         
         for phoneNumber in contact.phoneNumbers {
-            let phone = phoneNumber.value as! CNPhoneNumber
-            phoneNumbers.append((phone.stringValue,phoneNumber.label))
+            if let phone = phoneNumber.value as? CNPhoneNumber {
+                phoneNumbers.append((phone.stringValue, phoneNumber.label!))
+            }
         }
 
         for emailAddress in contact.emailAddresses {
-            let email = emailAddress.value as! String
-            emails.append((email,emailAddress.label))
+            if let email = emailAddress.value as? String {
+                emails.append((email,emailAddress.label!))
+            }
         }
     }
     
